@@ -1,11 +1,23 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+(function () {
+	'use strict';
 
-module.exports = function() {
-	var Locations = new Schema({
-		latitude : Number,
-		longitude : Number,
-		radius : Number	//The radius in K
-	});
-	mongoose.model("Users", Users);
-}
+	var mongoose = require('mongoose'),
+		locationsSchema = new mongoose.Schema ({
+			latitude : {
+				type: Number,
+				unique: true,
+				required: true
+			},
+			longitude : {
+				type: Number,
+				unique: true,
+				required: true
+			},
+			radius : {
+				type: Number,
+				unique: true,
+				required: true
+			}//The radius in K
+		});
+	module.exports = mongoose.model('locations', locationsSchema);
+}());

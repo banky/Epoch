@@ -15,7 +15,9 @@ router.get('/', function(req, res) {
 	res.json({message: 'Welcome'});
 });
 
-app.use('/api', router);
+app.get('/get-locations', function (req, res) {
+	mongodb.getLocations(req, res);
+});
 
 app.listen(PORT);
 console.log('The magic happens on port ' + PORT);
