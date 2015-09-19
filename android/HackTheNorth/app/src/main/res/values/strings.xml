@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Epoch</string>
+    <string name="active_locations">Active Locations</string>
+    <string name="facebook_app_id">454764744710652</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+</resources>
