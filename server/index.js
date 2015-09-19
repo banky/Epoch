@@ -205,7 +205,8 @@ app.get('/get-locations', function (req, res) {
 	mongodb.getLocations(req, res);
 });
 //Gets the next time a satellite will be at a location
-app.get('/get-next-time-at-location', function (req, res) {
+app.post('/get-next-time-at-location', function (req, res) {
+	console.log(req);
 	mongodb.getNextTimeAtLocation(req, res);
 });
 //Checks if bob is at the satellite location

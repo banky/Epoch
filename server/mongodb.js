@@ -35,12 +35,13 @@
 			//} else {
 				var longitude = req.body.longitude;
 				var latitude = req.body.latitude;
-
-				var url = 'https://api.urthecast.com/v1/satellite_tracker/sensor_platforms/iris/forecasts?geometry_intersects=POINT(' + latitude + 
+				console.log('latitude: ' + latitude);
+				console.log('longitude: ' + longitude);
+				var url = 'https://api.urthecast.com/v1/satellite_tracker/sensor_platforms/iris/forecasts?geometry_intersects=POINT(' + longitude + 
 					'%' + latitude + ')&api_key=' + apiKey + '&api_secret=' + apiSecret;
-
+				console.log('url: ' + url);
 				//Hacky way
-				https.request(options, function (response) {
+				https.request(url, function (response) {
 	  				var str = '';
 
 					//another chunk of data has been recieved, so append it to `str`
