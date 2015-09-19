@@ -12,7 +12,8 @@
 		User = require('./user'),
 		config = require('./config'),
 		apiKey = config.apiKey,
-		apiSecret = config.apiSecret;
+		apiSecret = config.apiSecret,
+		inside = require('point-in-polygon');
 
 	db.on('error', console.error);
 
@@ -147,6 +148,7 @@
 		};
 
 		exports.here = function (req, res) {
+			var polygon;
 			if (req.body.challenge === "CN Tower") {
 
 			} else if (req.body.challenge === "Algonquin Park") {
@@ -164,7 +166,11 @@
 			} else {
 				console.log('Challenge not found. Check in exports.here or your string');
 			}
-		}
+		};
+
+		//httpPost = function (url) {
+//
+//		};
 
 	});
 
