@@ -7,11 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-  	"express": "~4.0.0",
-	"mongoose": "~3.6.13",
-	"body-parser": "~1.0.1",
-	"mongodb": "~2.0",
-	"cookie-parser": "~1.4.x"
+    "body-parser": "^1.14.0",
+    "cookie-parser": "*",
+    "express": "^5.0.0-alpha.2",
+    "mongodb": "^2.1.0-alpha",
+    "mongoose": "^4.1.7",
+    "point-in-polygon": "*"
   },
   "author": "",
   "license": "ISC"

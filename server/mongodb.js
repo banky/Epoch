@@ -12,7 +12,7 @@
 		User = require('./user'),
 		config = require('./config'),
 		apiKey = config.apiKey,
-		apiSecret = config.apiSecret,
+		apiSecret = config.apiSecret;
 
 	db.on('error', console.error);
 
@@ -149,6 +149,20 @@
 		exports.here = function (req, res) {
 			if (req.body.challenge === "CN Tower") {
 
+			} else if (req.body.challenge === "Algonquin Park") {
+
+			} else if (req.body.challenge === "Scarborough bluffs") {
+
+			} else if (req.body.challenge === "Elora Gorge") {
+				
+			} else if (req.body.challenge === "Kawartha Highlands") {
+				
+			} else if (req.body.challenge === "Niagara Falls") {
+
+			} else if (req.body.challenge === "Hack the North") {
+
+			} else {
+				console.log('Challenge not found. Check in exports.here or your string');
 			}
 		}
 
