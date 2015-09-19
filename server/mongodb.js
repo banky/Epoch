@@ -134,13 +134,13 @@
 					console.log('Error in finding user in addUserLocation: ' + err);
 				} else {
 					user.locations.push(req.body.location);
-					user.save(function (err, req)) {
+					user.save(function (err, req) {
 						if (err) {
 							console.log('An error occured while saving the userLocation: ' + err);
 						} else {
 							res.status(200);
 						}
-					}
+					});
 				}
 			});
 		};
