@@ -147,7 +147,7 @@
 
 	});
 
-	mongoose.connect('mongodb://localhost:27017/mydb');
+	mongoose.connect('mongodb://heroku_90jwgmq9:nt2u3qf5v93tu4picrikhiqajj@ds051553.mongolab.com:51553/heroku_90jwgmq9');
 
 
 }());
