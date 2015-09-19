@@ -18,6 +18,9 @@ router.get('/', function(req, res) {
 app.get('/get-locations', function (req, res) {
 	mongodb.getLocations(req, res);
 });
+app.get('/get-next-time-at-location', function (req, res) {
+	mongodb.getNextTimeAtLocation(req, res);
+});
 
 app.listen(PORT);
 console.log('The magic happens on port ' + PORT);
