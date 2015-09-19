@@ -197,11 +197,21 @@ app.delete('/session', function (req, res) {
     res.status(200).send();
 });
 
+//Currently gets all the locations data from db
 app.get('/get-locations', function (req, res) {
 	mongodb.getLocations(req, res);
 });
+//Gets the next time a satellite will be at a location
 app.get('/get-next-time-at-location', function (req, res) {
 	mongodb.getNextTimeAtLocation(req, res);
+});
+//Checks if bob is at the satellite location
+app.get('/is-bob-at-location', function (req, res) {
+	var satelliteLocation,
+		bobsLocation = req.body.location;
+
+	//Get satellite location
+	
 });
 
 app.listen(PORT);
