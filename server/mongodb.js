@@ -12,7 +12,7 @@
 		User = require('./user'),
 		config = require('./config'),
 		apiKey = config.apiKey,
-		apiSecret = config.apiSecret;
+		apiSecret = config.apiSecret,
 
 	db.on('error', console.error);
 
@@ -33,8 +33,8 @@
 			//	console.log('Error. No location was received');
 			//	res.status(404).send();
 			//} else {
-				var longitude = req.body.longitude;
-				var latitude = req.body.latitude;
+				var longitude = req.query.longitude;
+				var latitude = req.query.latitude;
 				console.log('latitude: ' + latitude);
 				console.log('longitude: ' + longitude);
 				var url = 'https://api.urthecast.com/v1/satellite_tracker/sensor_platforms/iris/forecasts?geometry_intersects=POINT(' + longitude + 
@@ -145,6 +145,12 @@
 				}
 			});
 		};
+
+		exports.here = function (req, res) {
+			if (req.body.challenge === "CN Tower") {
+
+			}
+		}
 
 	});
 

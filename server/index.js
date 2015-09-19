@@ -6,6 +6,14 @@ var mongodb = require('./mongodb');
 var fs = require('fs');
 var cookieParser = require('cookie-parser');
 
+var cnTowerAOID = 'AU_nfvr5tVbz6yKH6FGa',
+	algonquinParkAOID = 'AU_nge1Aae0DkMKpFMvJ',
+	scarboroughBluffsAOID = 'AU_ngvnCae0DkMKpFMvL',
+	eloraGorgeAOID = 'AU_ng_hAae0DkMKpFMvM',
+	kawarthaHighlandsAOID = 'AU_nhVUu5L4R4rmumoLd',
+	niagaraFallsAOID = 'AU_nhnRntVbz6yKH6FGd',
+	currentChallenge;
+
 var PORT = process.env.PORT || 8080;
 userSessionAuthenticate = function (req, res, next) {
         UserSession.findOne({
@@ -115,7 +123,6 @@ userSessionAuthenticate = function (req, res, next) {
         console.log(req.body);
         var user = new User({
             username: req.body.username,
-            password: req.body.password,
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             points: 0
@@ -217,6 +224,10 @@ app.get('/is-bob-at-location', function (req, res) {
 	//Get satellite location
 });
 
+app.post('/current-challenge', function (req, res) {
+
+});
+
 app.get('/user-points', function (req, res) {
 	mongodb.getUserPoints(req, res);
 });
@@ -229,7 +240,9 @@ app.get('/get-user-locations', function (req, res) {
 app.post('/add-user-location', function (req, res) {
 	mongodb.addUserLocation(req, res);
 });
-
+app.post('/here', function (req, res) {
+	mongodb.here(req, res);
+});
 
 app.listen(PORT);
 console.log('The magic happens on port ' + PORT);
