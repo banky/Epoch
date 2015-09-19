@@ -18,7 +18,7 @@
 				unique : true,
 				required : true
 			},
-			locationsVisited : [];
+			locationsVisited : []
 		});
-	module.exports = mongoose.model('locations', locationsSchema);
+	module.exports = mongoose.model('users', userSchema);
 }());

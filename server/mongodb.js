@@ -9,7 +9,7 @@
 		http = require('http'),
 		https = require('https'),
 		Locations = require('./locations'),
-		User = require('./users'),
+		User = require('./user'),
 		config = require('./config'),
 		apiKey = config.apiKey,
 		apiSecret = config.apiSecret;
@@ -33,7 +33,11 @@
 			//	console.log('Error. No location was received');
 			//	res.status(404).send();
 			//} else {
-				var url = 'https://api.urthecast.com/v1/satellite_tracker/sensor_platforms/iris/forecasts?geometry_intersects=POINT(-122.27508%2037.81195)&api_key=' + apiKey + '&api_secret=' + apiSecret;
+				var longitude = req.body.longitude;
+				var latitude = req.body.latitude;
+
+				var url = 'https://api.urthecast.com/v1/satellite_tracker/sensor_platforms/iris/forecasts?geometry_intersects=POINT(' + latitude + 
+					'%' + latitude + ')&api_key=' + apiKey + '&api_secret=' + apiSecret;
 
 				//Hacky way
 				https.request(options, function (response) {
@@ -46,14 +50,16 @@
 
 					//the whole response has been recieved, so we just print it out here
 					response.on('end', function () {
+						var parsed = JSON.parse(str);
 						res.json(str).status(200);
 						console.log(str);
 					});
 				}).end();
 			//}
-		}
+		};
 
 		exports.getUserPoints = function(req, res) {
+			//Cannot test until we have functional login.
 			User.findOne({'_id': req.user._id}, function (err, user) {
 				if (err) {
 					console.log('Error finding user in getUserPoints: ' + err);
@@ -61,6 +67,26 @@
 				} else {
 					console.log('Getting user points');
 					res.json(user.points).status(200);
+				}
+			});
+		};
+
+		exports.changePoints = function (req, res) {
+			//Cannot test until we have a functional login
+			User.findOne({'_id': req.user._id}, function (err, user) {
+				if (err) {
+					console.log('Error finding user in changePoints: ' + err);
+				} else {
+					user.points = user.points + req.body.changeInPoints;
+					user.save (function (err, user) {
+						if (err) {
+							console.log('Error saving user in changePoints: ' + err);
+							res.status(400).send();
+						} else {
+							console.log('Points changed successfully');
+							res.status(200).send();
+						}
+					});
 				}
 			});
 		}
