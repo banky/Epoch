@@ -83,7 +83,6 @@
 				}
 			});
 		};
-	mongoose.connect('mongodb://localhost/mydb');
 
 		exports.getUserPoints = function(req, res) {
 			//Cannot test until we have functional login.
@@ -116,7 +115,35 @@
 					});
 				}
 			});
-		}
+		};
+
+		exports.getUserLocations = function (req, res) {
+			User.findOne({'_id' : req.user._id}, function (err, user) {
+				if (err) {
+					console.log('Error in finding user in getUserLocations: ' + err);
+				} else {
+					res.json(user.locations).status(200);
+					res.send();
+				}
+			});
+		};
+
+		exports.addUserLocation = function (req, res) {
+			User.findOne({'_id' : req.user._id}, function (err, user) {
+				if(err) {
+					console.log('Error in finding user in addUserLocation: ' + err);
+				} else {
+					user.locations.push(req.body.location);
+					user.save(function (err, req)) {
+						if (err) {
+							console.log('An error occured while saving the userLocation: ' + err);
+						} else {
+							res.status(200);
+						}
+					}
+				}
+			});
+		};
 
 	});
 

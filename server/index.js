@@ -169,7 +169,7 @@ app.get('/', function (req, res) {
     res.send('<html><body><h1>Hello World</h1></body></html>');
 });
 
-app.post('/user', userCreate, function (req, res) {
+app.post('/', userCreate, function (req, res) {
     console.log(req.body);
     res.status(200).send();
 });
@@ -211,8 +211,21 @@ app.get('/is-bob-at-location', function (req, res) {
 		bobsLocation = req.body.location;
 
 	//Get satellite location
-	
 });
+
+app.get('/user-points', function (req, res) {
+	mongodb.getUserPoints(req, res);
+});
+app.post('user-change-in-points', function (req, res) {
+	mongodb.changePoints(req, res);
+});
+app.get('/get-user-locations', function (req, res) {
+	mongodb.getUserLocations(req, res);
+});
+app.post('/add-user-location', function (req, res) {
+	mongodb.addUserLocation(req, res);
+});
+
 
 app.listen(PORT);
 console.log('The magic happens on port ' + PORT);
