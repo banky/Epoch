@@ -3,6 +3,8 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var mongodb = require('./mongodb');
+var fs = require('fs');
+var cookieParser = require('cookie-parser');
 
 var PORT = process.env.PORT || 8080;
 userSessionAuthenticate = function (req, res, next) {
@@ -164,9 +166,10 @@ userSessionAuthenticate = function (req, res, next) {
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(express.static(__dirname + '../public')).use(cookieParser());
 
 app.get('/', function (req, res) {
-    res.send('<html><body><h1>Hello World</h1></body></html>');
+	res.send('<html><body><h1>Hello World</h1></body></html>');
 });
 
 app.post('/', userCreate, function (req, res) {
