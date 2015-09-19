@@ -1,23 +1,24 @@
-var mongodb = require('mongodb');
-var MongoClient = mongodb.MongoClient;
-var exports = module.exports = {};
+(function () {
+	'use strict';
 
-var url = 'mongodb://localhost:27017/mydb';
+	var mongodb = require('mongodb'),
+		mongoose = require('mongoose'),
 
-var collection;
+		db = mongoose.connection,
 
-MongoClient.connect(url, function (err, db) {
-	if (err) {
-		console.log('Unable to connect to the mongoDB server. Error: ', err);
-	} else {
-		//We are connected
-		console.log('Connection established to ', url);
+		http = require('http');
+		Locations = require('./locations');
+	db.on('error', console.error);
 
-		//Do some work with the database
-		collection = db.collection("users");
+	db.once('open', function () {
+		exports.getLocations = function(req, res) {
+			Locations.find(function (err, locations) {
+				if (err) {
+					
+				}
+			}); 
+		}
+	});
+	mongoose.connect('mongodb://localhost/mydb');
 
-
-	}
-});
-
-//exports.blahblahblah add functions
+}());
