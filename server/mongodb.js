@@ -83,7 +83,6 @@
 				}
 			});
 		};
-	mongoose.connect('mongodb://localhost/mydb');
 
 		exports.getUserPoints = function(req, res) {
 			//Cannot test until we have functional login.
@@ -116,11 +115,39 @@
 					});
 				}
 			});
-		}
+		};
+
+		exports.getUserLocations = function (req, res) {
+			User.findOne({'_id' : req.user._id}, function (err, user) {
+				if (err) {
+					console.log('Error in finding user in getUserLocations: ' + err);
+				} else {
+					res.json(user.locations).status(200);
+					res.send();
+				}
+			});
+		};
+
+		exports.addUserLocation = function (req, res) {
+			User.findOne({'_id' : req.user._id}, function (err, user) {
+				if(err) {
+					console.log('Error in finding user in addUserLocation: ' + err);
+				} else {
+					user.locations.push(req.body.location);
+					user.save(function (err, req) {
+						if (err) {
+							console.log('An error occured while saving the userLocation: ' + err);
+						} else {
+							res.status(200);
+						}
+					});
+				}
+			});
+		};
 
 	});
 
-	mongoose.connect('mongodb://localhost:27017/mydb');
+	mongoose.connect('mongodb://heroku_90jwgmq9:nt2u3qf5v93tu4picrikhiqajj@ds051553.mongolab.com:51553/heroku_90jwgmq9');
 
 
 }());
