@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <item name="primary" type="color">#0090ff</item>
-    <item name="primary_dark" type="color">#0082E6</item>
-    <item name="accent" type="color">#33A6FF</item>
+    <item name="primary" type="color">#007096</item>
+    <item name="primary_dark" type="color">#070b25</item>
+    <item name="accent" type="color">#3ab4d7</item>
     <!--<item name="accent" type="color">#0090ff</item>-->
     <item name="red" type="color">#FF3B3B</item>
     <item name="red_dark" type="color">#EE2A2A</item>
