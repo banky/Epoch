@@ -9,6 +9,7 @@
 		http = require('http'),
 		https = require('https'),
 		Locations = require('./locations'),
+		User = require('./users'),
 		config = require('./config'),
 		apiKey = config.apiKey,
 		apiSecret = config.apiSecret;
@@ -20,7 +21,7 @@
 			Locations.find(function (err, locations) {
 				if (err) {
 					console.log('Error in get locations: ' + err);
-					res.status(404).send();
+					res.status(400).send();
 				}
 				res.json(locations).status(200);				
 			}); 
@@ -52,7 +53,17 @@
 			//}
 		}
 
-		exports.
+		exports.getUserPoints = function(req, res) {
+			User.findOne({'_id': req.user._id}, function (err, user) {
+				if (err) {
+					console.log('Error finding user in getUserPoints: ' + err);
+					res.status(400).send
+				} else {
+					console.log('Getting user points');
+					res.json(user.points).status(200);
+				}
+			});
+		}
 
 	});
 
