@@ -264,8 +264,7 @@
 		};
 
 		exports.getChallenges = function (req, res) {
-			var points = 50,
-				homeBase,
+			var homeBase,
 				polygon = [],
 				urls = [],
 				challenges = [];
@@ -301,6 +300,7 @@
 										if (err) {
 											console.log('An error occured getting user in getChallenges: ' + err);
 										} else {
+											var points = 50;
 											var averageLon = 0,
 												averageLat = 0,
 												polygonLength = polygon.length,
