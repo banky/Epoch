@@ -1,18 +1,28 @@
 package example.com.server;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
+import example.com.hackthenorth.Application;
+import example.com.hackthenorth.MainActivity;
+import example.com.hackthenorth.Site;
 
 /**
  * Created by ianlo on 2015-09-19.
@@ -20,34 +30,66 @@ import java.io.IOException;
 public class HereRequest extends AsyncTask {
 
     String responseString;
-String name;
-    public HereRequest(String name){
-        this.name = name;
+    Site site;
+    double latitude, longitude;
+    Context context;
+    HttpResponse response;
+    public HereRequest(Site site, double latitude, double longitude, Context context) {
+        this.site = site;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.context = context;
     }
+
     @Override
     protected Object doInBackground(Object[] params) {
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpResponse response;
-        responseString = null;
+
+        HttpClient httpClient = new DefaultHttpClient();
+        // replace with your url
+        HttpPost httpPost = new HttpPost(ServerConstants.SERVER + "/here");
+
+
+        //Post Data
+        List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(3);
+        nameValuePair.add(new BasicNameValuePair("challenge", site.getName()));
+        nameValuePair.add(new BasicNameValuePair("longitude", longitude+""));
+        nameValuePair.add(new BasicNameValuePair("latitude", latitude+""));
+
+        //Encoding POST data
         try {
-            String url = ServerConstants.SERVER + "/get-location-info?name=" + name;
-            response = httpclient.execute(new HttpPost(url));
-            StatusLine statusLine = response.getStatusLine();
-            if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                response.getEntity().writeTo(out);
-                responseString = out.toString();
-                out.close();
-            } else {
-                //Closes the connection.
-                response.getEntity().getContent().close();
-                throw new IOException(statusLine.getReasonPhrase());
-            }        } catch (ClientProtocolException e) {
-            //TODO Handle problems..
-        } catch (IOException e) {
-            //TODO Handle problems..
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePair));
+        } catch (UnsupportedEncodingException e) {
+            // log exception
+            e.printStackTrace();
         }
-        Log.d("SatRequest", responseString);
+
+        //making POST request.
+        try {
+             response = httpClient.execute(httpPost);
+
+            Log.d("Http Post Response:", response.toString());
+        } catch (ClientProtocolException e) {
+            // Log exception
+            e.printStackTrace();
+        } catch (IOException e) {
+            // Log exception
+            e.printStackTrace();
+        }
         return responseString;
+    }
+
+    @Override
+    protected void onPostExecute(Object o) {
+        super.onPostExecute(o);
+        // write response to log
+        if(response.toString().equals("OK") || true) {
+            Application.getSite(site.getName()).completed = true;
+            Toast.makeText(context, "Good work!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(context, MainActivity.class);
+            context.startActivity(intent);
+        }
+        else {
+            Toast.makeText(context, "You're not in the right place at the right time!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

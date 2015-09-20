@@ -6,6 +6,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -18,12 +20,16 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 
+import example.com.server.HereRequest;
+
 public class SiteDetails extends Activity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     GoogleApiClient mGoogleApiClient;
     MapFragment mapFragment;
     GoogleMap map;
-
+    double currentLat = 0;
+    double currentLong = 0;
+    Site site;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +41,7 @@ public class SiteDetails extends Activity implements
                 map.getUiSettings().setMyLocationButtonEnabled(true);
                 map.getUiSettings().setMapToolbarEnabled(true);
                 map.getUiSettings().setAllGesturesEnabled(true);
-                Site site = Site.deserialize(getIntent().getByteArrayExtra("site"));
+                 site = Site.deserialize(getIntent().getByteArrayExtra("site"));
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(site.getLatitude(), site.getLongitude()), 14));
                 mGoogleApiClient = new GoogleApiClient.Builder(SiteDetails.this)
                         .addConnectionCallbacks(SiteDetails.this)
@@ -47,7 +53,15 @@ public class SiteDetails extends Activity implements
             }
         });
         ((TextView) findViewById(R.id.countdown)).setText("ISS arriving in 10 seconds");
-
+        ((Button) findViewById(R.id.imhere)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currentLat != 0 && currentLong != 0) {
+                    HereRequest hr = new HereRequest(site, currentLat, currentLong, SiteDetails.this);
+                    hr.execute();
+                }
+            }
+        });
     }
 
     @Override
@@ -58,7 +72,7 @@ public class SiteDetails extends Activity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -82,8 +96,8 @@ public class SiteDetails extends Activity implements
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
-//            ((TextView) findViewById(R.id.latitudeTV)).setText(String.valueOf(mLastLocation.getLatitude()));
-//            ((TextView) findViewById(R.id.longitudeTV)).setText(String.valueOf(mLastLocation.getLongitude()));
+            currentLat = mLastLocation.getLatitude();
+            currentLong = mLastLocation.getLongitude();
         }
     }
 

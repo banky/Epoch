@@ -18,21 +18,15 @@
         android:layout_below="@id/countdown"
         android:layout_height="fill_parent"
         android:layout_margin="10dp"
-        android:layout_above="@+id/angry_btn"
+        android:layout_above="@+id/imhere"
         map:mapType="normal" />
-    <!--<Button-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:text="I'm here!"-->
-        <!--android:id="@+id/checkSiteButton"/>-->
+
     <Button
-        android:id="@+id/angry_btn"
+        android:id="@+id/imhere"
 
         android:text="I'm Here!"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp"
+        android:textColor="#ffffff"
+        android:textSize="20pt"
         android:background="@drawable/buttonshape"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

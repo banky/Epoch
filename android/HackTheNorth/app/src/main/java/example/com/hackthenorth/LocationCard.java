@@ -6,6 +6,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ public class LocationCard extends RecyclerView.ViewHolder {
     GoogleMap map;
     Context context;
     Site site;
+    ImageView check;
 
     public LocationCard(final View itemView, final Context context) {
         super(itemView);
@@ -29,6 +31,8 @@ public class LocationCard extends RecyclerView.ViewHolder {
         this.context = context;
         layout = (RelativeLayout) itemView.findViewById(R.id.cardViewLayout);
 //        toolbar = (Toolbar) itemView.findViewById(R.id.card_toolbar);
+        check = (ImageView) itemView.findViewById(R.id.checkmark);
+
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -37,11 +41,16 @@ public class LocationCard extends RecyclerView.ViewHolder {
                 context.startActivity(intent);
             }
         });
-
     }
 
     public void setLocation(Site site) {
         this.site = site;
+        if (!site.completed) {
+            check.setVisibility(View.INVISIBLE);
+        }
+        else {
+            check.setVisibility(View.VISIBLE);
+        }
 //        toolbar.setTitle(site.getName());
 //        toolbar.setTitleTextColor(Color.WHITE);
         ((TextView) layout.findViewById(R.id.locationName)).setText(site.getName());

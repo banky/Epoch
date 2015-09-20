@@ -17,6 +17,7 @@ public class Site implements Serializable, Comparable<Site>{
     private String name;
     private double latitude;
     private double longitude;
+    public boolean completed = false;
 
     public Site(String name) {
         this.name = name;

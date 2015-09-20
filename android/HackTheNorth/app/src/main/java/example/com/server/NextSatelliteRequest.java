@@ -10,6 +10,8 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,6 +35,8 @@ public class NextSatelliteRequest extends AsyncTask {
         try {
             String url = ServerConstants.SERVER + "/get-next-time-at-location?latitude=" + latitude + "&longitude=" + longitude;
             response = httpclient.execute(new HttpGet(url));
+//            JSONObject object = new JSONObject(response.toString());
+
             StatusLine statusLine = response.getStatusLine();
             if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -48,7 +52,14 @@ public class NextSatelliteRequest extends AsyncTask {
         } catch (IOException e) {
             //TODO Handle problems..
         }
-        Log.d("SatRequest", responseString);
+
+        try {
+            JSONObject object = new JSONObject(responseString);
+            Log.d("SatRequest", responseString);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return responseString;
     }
 }

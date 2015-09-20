@@ -1,6 +1,7 @@
 package example.com.hackthenorth;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,7 +24,6 @@ import example.com.server.NextSatelliteRequest;
 public class MainActivity extends Activity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     GoogleApiClient mGoogleApiClient;
-    ArrayList<Site> exploreSites;
     LinearLayoutManager layoutManager;
 
     @Override
@@ -32,7 +32,18 @@ public class MainActivity extends Activity implements
         FacebookSdk.sdkInitialize(getApplicationContext());
 
         setContentView(R.layout.activity_main);
-        exploreSites = new ArrayList<Site>();
+        if(Application.sites == null) {
+            Application.sites = new ArrayList<Site>();
+            Application.sites.add(new Site("Hack the North"));
+            Application.sites.add(new Site("CN Tower"));
+            Application.sites.add(new Site("Algonquin Park"));
+            Application.sites.add(new Site("Scarborough Bluffs"));
+            Application.sites.add(new Site("Niagara Falls"));
+            Application.sites.add(new Site("Elora Gorge"));
+            Collections.sort(Application.sites);
+            Application.sites.get(0).setLatitude(43.472827);
+            Application.sites.get(0).setLongitude(-80.540333);
+        }
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -46,16 +57,10 @@ public class MainActivity extends Activity implements
         layoutManager = new LinearLayoutManager(this);
 
         recyclerView.setLayoutManager(layoutManager);
-        RVAdapter adapter = new RVAdapter(exploreSites, this);
+        RVAdapter adapter = new RVAdapter(Application.sites, this);
         recyclerView.setAdapter(adapter);
-        exploreSites.add(new Site("Hack the North"));
-        exploreSites.add(new Site("CN Tower"));
-        exploreSites.add(new Site("Algonquin Park"));
-        exploreSites.add(new Site("Scarborough Bluffs"));
-        exploreSites.add(new Site("Niagara Falls"));
-        exploreSites.add(new Site("Elora Gorge"));
-        Collections.sort(exploreSites);
-        NextSatelliteRequest nsr = new NextSatelliteRequest(exploreSites.get(0).getLatitude(), exploreSites.get(0).getLongitude());
+
+        NextSatelliteRequest nsr = new NextSatelliteRequest(Application.sites.get(0).getLatitude(), Application.sites.get(0).getLongitude());
 //        nsr.execute();
     }
     @Override
@@ -63,7 +68,7 @@ public class MainActivity extends Activity implements
         super.onResume();
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.locationRecyclerView);
-        RVAdapter adapter = new RVAdapter(exploreSites, this);
+        RVAdapter adapter = new RVAdapter(Application.sites, this);
         recyclerView.setAdapter(adapter);
     }
     @Override
@@ -82,6 +87,9 @@ public class MainActivity extends Activity implements
 
         if (id == R.id.log_out) {
             LoginManager.getInstance().logOut();
+            Application.sites = null;
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
             return true;
         }
 

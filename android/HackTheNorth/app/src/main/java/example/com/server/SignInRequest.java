@@ -1,5 +1,8 @@
 package example.com.server;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -17,6 +20,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import example.com.hackthenorth.MainActivity;
+
 /**
  * Created by ianlo on 2015-09-19.
  */
@@ -24,11 +29,23 @@ public class SignInRequest extends AsyncTask{
 
     String responseString;
     String email, first, last;
-    public SignInRequest(String email, String first, String last) {
+    Context context;
+    ProgressDialog pd;
+    public SignInRequest(String email, String first, String last, Context context) {
         this.email = email;
         this.first = first;
         this.last = last;
+        this.context = context;
     }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        pd = new ProgressDialog(context);
+        pd.setMessage("Loading...");
+        pd.show();
+    }
+
     @Override
     protected Object doInBackground(Object[] params) {
 
@@ -38,10 +55,13 @@ public class SignInRequest extends AsyncTask{
 
 
         //Post Data
-        List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(3);
+        List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(5);
         nameValuePair.add(new BasicNameValuePair("username", email));
         nameValuePair.add(new BasicNameValuePair("firstName", first));
         nameValuePair.add(new BasicNameValuePair("lastName", last));
+        nameValuePair.add(new BasicNameValuePair("latitude", first));
+        nameValuePair.add(new BasicNameValuePair("lon", first));
+
 
 
         //Encoding POST data
@@ -65,5 +85,13 @@ public class SignInRequest extends AsyncTask{
             e.printStackTrace();
         }
         return responseString;
+    }
+
+    @Override
+    protected void onPostExecute(Object o) {
+        super.onPostExecute(o);
+        pd.dismiss();
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
     }
 }
