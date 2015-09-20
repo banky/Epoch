@@ -18,6 +18,18 @@
 				unique : true,
 				required : true
 			},
+			homeBase : {
+				latitude : {
+					type : Number,
+					unique : true,
+					required : true
+				},
+				longitude : {
+					type : Number,
+					unique : true,
+					required : true
+				}
+			},
 			locationsVisited : []
 		});
 	module.exports = mongoose.model('users', userSchema);

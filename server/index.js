@@ -5,16 +5,10 @@ var bodyParser = require('body-parser');
 var mongodb = require('./mongodb');
 var fs = require('fs');
 var cookieParser = require('cookie-parser');
-
-var cnTowerAOID = 'AU_nfvr5tVbz6yKH6FGa',
-	algonquinParkAOID = 'AU_nge1Aae0DkMKpFMvJ',
-	scarboroughBluffsAOID = 'AU_ngvnCae0DkMKpFMvL',
-	eloraGorgeAOID = 'AU_ng_hAae0DkMKpFMvM',
-	kawarthaHighlandsAOID = 'AU_nhVUu5L4R4rmumoLd',
-	niagaraFallsAOID = 'AU_nhnRntVbz6yKH6FGd',
-	currentChallenge;
-
 var PORT = process.env.PORT || 8080;
+
+var currentChallenge;
+
 userSessionAuthenticate = function (req, res, next) {
         UserSession.findOne({
             'sessionId': req.cookies.userSessionId
@@ -122,7 +116,7 @@ userSessionAuthenticate = function (req, res, next) {
         console.log('Creating user...');
         console.log(req.body);
         var user = new User({
-            username: req.body.username,
+            email: req.body.email,
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             points: 0
@@ -139,7 +133,7 @@ userSessionAuthenticate = function (req, res, next) {
     userLogIn = function (req, res, next) {
 
         User.findOne({
-            'username': req.body.username
+            'email': req.body.email
         }, function (err, user) {
 
             if (err !== null) {
@@ -149,24 +143,24 @@ userSessionAuthenticate = function (req, res, next) {
             }
 
             if (user !== null) {
-                user.verifyPassword(req.body.password, function (err, isMatch) {
+                // user.verifyPassword(req.body.password, function (err, isMatch) {
 
-                    // Password did not match, unset the user.
-                    if (isMatch === false) {
-                        console.log('Error with username or password (0): ' + err);
-                        res.status(401);
-                        next('Error Username or password incorrect. (0)');
-                    } else {
-                        req.user = user;
-                        next(err, user);
-                        console.log('User logged in');
-                    }
-                });
+                //     // Password did not match, unset the user.
+                //     if (isMatch === false) {
+                //         console.log('Error with username or password (0): ' + err);
+                //         res.status(401);
+                //         next('Error Username or password incorrect. (0)');
+                //     } else {
+                //         req.user = user;
+                //         next(err, user);
+                //         console.log('User logged in');
+                //     }
+                // });
             } else {
-                console.log('Error with username or password (0): ' + err);
+                console.log('Error logging in (0): ' + err);
                 console.log(user);
                 res.status(401);
-                next('Error Username or password incorrect. (1)', user);
+                next('Error logging in (2): ', user);
             }
         });
     };
@@ -212,7 +206,7 @@ app.get('/get-locations', function (req, res) {
 	mongodb.getLocations(req, res);
 });
 //Gets the next time a satellite will be at a location
-app.post('/get-next-time-at-location', function (req, res) {
+app.get('/get-next-time-at-location', function (req, res) {
 	console.log(req);
 	mongodb.getNextTimeAtLocation(req, res);
 });
@@ -223,14 +217,15 @@ app.get('/is-bob-at-location', function (req, res) {
 
 	//Get satellite location
 });
-
+//Seems this endpoint is not necessary anymore
 app.post('/current-challenge', function (req, res) {
 
 });
-
+//Gets the users points. Pass in the email as a param.
 app.get('/user-points', function (req, res) {
 	mongodb.getUserPoints(req, res);
 });
+
 app.post('user-change-in-points', function (req, res) {
 	mongodb.changePoints(req, res);
 });
@@ -243,6 +238,13 @@ app.post('/add-user-location', function (req, res) {
 app.post('/here', function (req, res) {
 	mongodb.here(req, res);
 });
+app.get('/get-challenges', function (req, res) {
+	mongodb.getChallenges(req, res);
+});
+app.post('/add-home-base', function (req, res) {
+	mongodb.addHomeBase;
+})
+
 
 app.listen(PORT);
 console.log('The magic happens on port ' + PORT);

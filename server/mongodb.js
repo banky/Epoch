@@ -13,7 +13,17 @@
 		config = require('./config'),
 		apiKey = config.apiKey,
 		apiSecret = config.apiSecret,
-		inside = require('point-in-polygon');
+		inside = require('point-in-polygon'),
+		request = require('request'),
+		waterfall = require('async-waterfall'),
+
+		cnTowerAOID = 'AU_nfvr5tVbz6yKH6FGa',
+		algonquinParkAOID = 'AU_nge1Aae0DkMKpFMvJ',
+		scarboroughBluffsAOID = 'AU_ngvnCae0DkMKpFMvL',
+		eloraGorgeAOID = 'AU_ng_hAae0DkMKpFMvM',
+		kawarthaHighlandsAOID = 'AU_nhVUu5L4R4rmumoLd',
+		niagaraFallsAOID = 'AU_nhnRntVbz6yKH6FGd',
+		arrayOfAoIDs = [cnTowerAOID, algonquinParkAOID, scarboroughBluffsAOID, eloraGorgeAOID, kawarthaHighlandsAOID, niagaraFallsAOID];
 
 	db.on('error', console.error);
 
@@ -39,7 +49,7 @@
 				console.log('latitude: ' + latitude);
 				console.log('longitude: ' + longitude);
 				var url = 'https://api.urthecast.com/v1/satellite_tracker/sensor_platforms/iris/forecasts?geometry_intersects=POINT(' + longitude + 
-					'%' + latitude + ')&api_key=' + apiKey + '&api_secret=' + apiSecret;
+					'%20' + latitude + ')&api_key=' + apiKey + '&api_secret=' + apiSecret;
 				console.log('url: ' + url);
 				//Hacky way
 				https.request(url, function (response) {
@@ -60,7 +70,7 @@
 			//}
 		};
 
-
+		//Not for demo purposes
 		exports.addLocations = function(req,res) {
 			Locations.findOne({'id': req.user._id}, function(err,user){
 				if(err){
@@ -88,7 +98,7 @@
 
 		exports.getUserPoints = function(req, res) {
 			//Cannot test until we have functional login.
-			User.findOne({'_id': req.user._id}, function (err, user) {
+			User.findOne({'email': req.param.email}, function (err, user) {
 				if (err) {
 					console.log('Error finding user in getUserPoints: ' + err);
 					res.status(400).send
@@ -101,7 +111,7 @@
 
 		exports.changePoints = function (req, res) {
 			//Cannot test until we have a functional login
-			User.findOne({'_id': req.user._id}, function (err, user) {
+			User.findOne({'email': req.param.email}, function (err, user) {
 				if (err) {
 					console.log('Error finding user in changePoints: ' + err);
 				} else {
@@ -120,7 +130,7 @@
 		};
 
 		exports.getUserLocations = function (req, res) {
-			User.findOne({'_id' : req.user._id}, function (err, user) {
+			User.findOne({'email': req.param.email}, function (err, user) {
 				if (err) {
 					console.log('Error in finding user in getUserLocations: ' + err);
 				} else {
@@ -131,7 +141,7 @@
 		};
 
 		exports.addUserLocation = function (req, res) {
-			User.findOne({'_id' : req.user._id}, function (err, user) {
+			User.findOne({'email': req.param.email}, function (err, user) {
 				if(err) {
 					console.log('Error in finding user in addUserLocation: ' + err);
 				} else {
@@ -148,30 +158,167 @@
 		};
 
 		exports.here = function (req, res) {
-			var polygon;
+			//var userLocation = req.body.location;
 			if (req.body.challenge === "CN Tower") {
-
+				getPolygon(cnTowerAOID, req);
 			} else if (req.body.challenge === "Algonquin Park") {
-
+				getPolygon(algonquinParkAOID, req);
 			} else if (req.body.challenge === "Scarborough bluffs") {
-
+				getPolygon(scarboroughBluffsAOID, req);
 			} else if (req.body.challenge === "Elora Gorge") {
-				
+				getPolygon(eloraGorgeAOID, req);
 			} else if (req.body.challenge === "Kawartha Highlands") {
-				
+				getPolygon(kawarthaHighlandsAOID, req);
 			} else if (req.body.challenge === "Niagara Falls") {
-
+				getPolygon(niagaraFallsAOID, req);
 			} else if (req.body.challenge === "Hack the North") {
-
+				//TODO Add hack the north!!!!!!!!!!!!!!!!!!!!
 			} else {
 				console.log('Challenge not found. Check in exports.here or your string');
 			}
+			
 		};
 
-		//httpPost = function (url) {
-//
-//		};
+		var getPolygon = function (aoid, req) {
+			var polygon = [];
+			var url = "https://api.urthecast.com/v1/consumers/apps/me/aois/" + aoid + "?api_key=" + apiKey + 
+				"&api_secret=" + apiSecret;
 
+			waterfall([
+				function (callback) {
+					request.get(url, function (error, response, body) {
+						if (!error && response.statusCode == 200) {
+							var jsonBody = JSON.parse(body);
+							polygon = jsonBody.payload[0].geometry.coordinates[0];
+						} else {
+							console.log('An error occured: ' + error);
+						}
+						callback(null, polygon, req);
+					});
+				}, 
+				function (polygon, req, callback) {
+					var homeBase;
+					User.findOne({'email': req.param.email}, function (err, user) {
+						if (err) {
+							console.log('Error getting user in waterfall: ' + err);
+						} else {
+							homeBase = user.homeBase;
+						}
+					});
+					if (inside([req.body.location.longitude, req.body.location.latitude], polygon)) {
+						var averageLon = 0,
+							averageLat = 0,
+							polygonLength = polygon.length,
+							radius = 0;
+						for (var i = 0; i < polygonLength; i++) {
+							averageLon += polygon[i][0];
+							averageLat += polygon[i][1];
+						};
+						averageLon /= polygonLength;
+						averageLat /= polygonLength;
+
+						for (var i = 0; i < polygonLength; i++) {
+							radius += sqrt((abs(polygon[i][0] - averageLon))*(abs(polygon[i][0] - averageLon)) + 
+								(abs(polygon[i][1] - averageLat))*(abs(polygon[i][1] - averageLat)));
+						}
+						radius /= polygonLength;
+
+						res.status(200).send;
+					} else {
+						res.send(401);
+					}
+					
+				}
+			]);
+		};
+
+		exports.getChallenges = function (req, res) {
+			var title,
+				points = 50,
+				homeBase,
+				polygon = [],
+				urls = [],
+				challenges = [];
+
+			for (var i = 0; i < 7; i++) {
+				url = "https://api.urthecast.com/v1/consumers/apps/me/aois/" + arrayOfAoIDs[i] + "?api_key=" + apiKey + 
+				"&api_secret=" + apiSecret;
+				waterfall([
+					function (callback) {
+						request.get(urls[i], function (error, response, body) {
+							if (!error && response.statusCode == 200) {
+								var jsonBody = JSON.parse(body);
+								polygon = jsonBody.payload[0].geometry.coordinates[0];
+							} else {
+								console.log('An error occured: ' + error);
+							}
+							callback(null, polygon, req);
+						});
+					}, function (polygon, req, callback) {
+						User.findOne({'email': req.param.email}, function (err, user) {
+							if (err) {
+								console.log('An error occured getting user in getChallenges: ' + err);
+							} else {
+								homeBase = user.homeBase;
+							}
+						});
+
+						if (!inside([homeBase.longitude, homeBase.latitude], polygon)) {
+							var averageLon = 0,
+								averageLat = 0,
+								polygonLength = polygon.length,
+								radius = 0;
+							for (var i = 0; i < polygonLength; i++) {
+								averageLon += polygon[i][0];
+								averageLat += polygon[i][1];
+							};
+							averageLon /= polygonLength;
+							averageLat /= polygonLength;
+
+							for (var i = 0; i < polygonLength; i++) {
+								radius += sqrt((abs(polygon[i][0] - averageLon))*(abs(polygon[i][0] - averageLon)) + 
+									(abs(polygon[i][1] - averageLat))*(abs(polygon[i][1] - averageLat)));
+							}
+							radius /= polygonLength;
+
+							var distance,
+								longitudeDistance,
+								latitudeDistance;
+							longitudeDistance = abs(homeBase.longitude - center.longitude) - radius;
+							latitudeDistance = abs(homeBase.latitude - center.latitude) - radius;
+
+							//Lets convert stuff to KM
+							longitudeDistance = 111.320 * cos(latitudeDistance);
+							latitudeDistance = latitudeDistance * 110.574;
+							
+							distance = sqrt(longitudeDistance * longitudeDistance + latitudeDistance * latitudeDistance);
+
+							points += distance*50/10;
+						}
+					}
+
+				]);	
+			}
+		};
+
+		exports.addHomeBase = function (req, res) {
+			User.findOne({'email': req.param.email}, function (err, user) {
+				if (err) {
+					console.log('An error occured finding user in addHoeBase: ' + err);
+				} else {
+					user.homeBase = req.body.homeBase;
+					user.save (function (err, user) {
+						if (err) {
+							console.log('Error saving user in addHomeBase: ' + err);
+							res.status(400).send();
+						} else {
+							console.log('Home base added successfully');
+							res.status(200).send();
+						}
+					});
+				}
+			});
+		};
 	});
 
 	mongoose.connect('mongodb://heroku_90jwgmq9:nt2u3qf5v93tu4picrikhiqajj@ds051553.mongolab.com:51553/heroku_90jwgmq9');
