@@ -307,6 +307,13 @@
 												callback();
 											} else {
 												console.log('inside home base');
+												var challenge = {
+													"title" : title,
+													"points" : points,
+													"latitude" : averageLat,
+													"longitude" : averageLon
+												}
+												challenges.push(challenge);
 												callback();
 											}
 										}
