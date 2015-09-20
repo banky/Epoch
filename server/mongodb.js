@@ -273,6 +273,7 @@
 											};
 											averageLon /= polygonLength;
 											averageLat /= polygonLength;
+
 											homeBase = user.homeBase;
 
 											if (!inside([homeBase.longitude, homeBase.latitude], polygon)) {
@@ -296,10 +297,7 @@
 
 												points += distance*50/10;
 												points = Math.round(points);
-												
-												currentLongitude = averageLon;
-												currentLatitude = averageLat;
-
+						
 												var challenge = {
 													"title" : title,
 													"points" : points,
