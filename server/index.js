@@ -122,7 +122,7 @@ userSessionAuthenticate = function (req, res, next) {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             points: 0,
-            homeBase = req.body.homeBase
+            homeBase : req.body.homeBase
         });
 
         userSaveToDb(user).then(function () {
