@@ -263,6 +263,8 @@
 										if (err) {
 											console.log('An error occured getting user in getChallenges: ' + err);
 										} else {
+											var currentLatitude;
+											var currentLongitude;
 											homeBase = user.homeBase;
 											if (!inside([homeBase.longitude, homeBase.latitude], polygon)) {
 												var averageLon = 0,
@@ -297,6 +299,9 @@
 												points += distance*50/10;
 												points = Math.round(points);
 												
+												currentLongitude = averageLon;
+												currentLatitude = averageLat;
+
 												var challenge = {
 													"title" : title,
 													"points" : points,
@@ -310,8 +315,8 @@
 												var challenge = {
 													"title" : title,
 													"points" : points,
-													"latitude" : averageLat,
-													"longitude" : averageLon
+													"latitude" : currentLatitude,
+													"longitude" : currentLongitude
 												}
 												challenges.push(challenge);
 												callback();
