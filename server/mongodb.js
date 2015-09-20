@@ -57,8 +57,12 @@
 					if (!error && response.statusCode == 200) {
 						var jsonBody = JSON.parse(body);
 						console.log(jsonBody);
-						while (jsonBody.payload[i].type === "future" && i < jsonBody.payload.length) {
-							epoch = jsonBody.payload[i].epoch;
+						while (i < jsonBody.payload.length) {
+							if (jsonBody.payload[i]) {
+								if (jsonBody.payload[i].type === "future" ) {
+									epoch = jsonBody.payload[i].epoch;
+								}
+							}
 							i++;
 						}
 						date = new Date();
