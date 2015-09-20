@@ -14,9 +14,11 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.Collections;
+
+import example.com.server.NextSatelliteRequest;
 
 public class MainActivity extends Activity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
@@ -46,13 +48,15 @@ public class MainActivity extends Activity implements
         recyclerView.setLayoutManager(layoutManager);
         RVAdapter adapter = new RVAdapter(exploreSites, this);
         recyclerView.setAdapter(adapter);
-        exploreSites.add(new Site("Hack the North", new LatLng(43.472831, -80.540430), 9001));
-        exploreSites.add(new Site("CN Tower", new LatLng(43.642225, -79.387046), 10));
-        exploreSites.add(new Site("Algonquin Park", new LatLng(45.837167, -78.379875), 50));
-        exploreSites.add(new Site("Toronto Zoo", new LatLng(43.817658, -79.186030), 15));
-        exploreSites.add(new Site("Niagara Falls", new LatLng(43.086621, -79.070959), 50));
-        exploreSites.add(new Site("Parliament Hill", new LatLng(45.424840, -75.699400), 100));
-
+        exploreSites.add(new Site("Hack the North"));
+        exploreSites.add(new Site("CN Tower"));
+        exploreSites.add(new Site("Algonquin Park"));
+        exploreSites.add(new Site("Scarborough Bluffs"));
+        exploreSites.add(new Site("Niagara Falls"));
+        exploreSites.add(new Site("Elora Gorge"));
+        Collections.sort(exploreSites);
+        NextSatelliteRequest nsr = new NextSatelliteRequest(exploreSites.get(0).getLatitude(), exploreSites.get(0).getLongitude());
+//        nsr.execute();
     }
     @Override
     protected void onResume() {
