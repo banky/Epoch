@@ -23,7 +23,10 @@
 		eloraGorgeAOID = 'AU_ng_hAae0DkMKpFMvM',
 		kawarthaHighlandsAOID = 'AU_nhVUu5L4R4rmumoLd',
 		niagaraFallsAOID = 'AU_nhnRntVbz6yKH6FGd',
-		arrayOfAoIDs = [cnTowerAOID, algonquinParkAOID, scarboroughBluffsAOID, eloraGorgeAOID, kawarthaHighlandsAOID, niagaraFallsAOID];
+		gtaAOID = 'AU_pMaRUGPejrq3tvGr4',
+		neUSAAOID = 'AU_pO8aY5HTUQ1kxV-eV',
+		hackTheNorthAOID = 'AU_pQrKNtVbz6yKH6Psj',
+		arrayOfAoIDs = [cnTowerAOID, algonquinParkAOID, scarboroughBluffsAOID, eloraGorgeAOID, kawarthaHighlandsAOID, niagaraFallsAOID, gtaAOID, neUSAAOID, hackTheNorthAOID];
 
 	db.on('error', console.error);
 
@@ -157,7 +160,11 @@
 			} else if (req.body.challenge === "Niagara Falls") {
 				getPolygon(niagaraFallsAOID, req);
 			} else if (req.body.challenge === "Hack the North") {
-				//TODO Add hack the north!!!!!!!!!!!!!!!!!!!!
+				getPolygon(hackTheNorthAOID, req);
+			} else if (req.body.challenge === "GTA") {
+				getPolygon(gtaAOID, req);
+			} else if (req.body.challenge === "NEUSA") {
+				getPolygon(neUSAAOID, req);
 			} else {
 				console.log('Challenge not found. Check in exports.here or your string');
 			}
