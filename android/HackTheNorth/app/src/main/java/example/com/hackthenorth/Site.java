@@ -2,8 +2,6 @@ package example.com.hackthenorth;
 
 import android.util.Log;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -15,17 +13,13 @@ import java.io.Serializable;
 /**
  * Created by ianlo on 2015-09-19.
  */
-public class Site implements Serializable{
+public class Site implements Serializable, Comparable<Site>{
     private String name;
     private double latitude;
     private double longitude;
-    private int points;
 
-    public Site(String name, LatLng location, int points) {
+    public Site(String name) {
         this.name = name;
-        this.setLatitude(location.latitude);
-        this.setLongitude(location.longitude);
-        this.setPoints(points);
     }
 
     public String getName() {
@@ -96,11 +90,9 @@ public class Site implements Serializable{
         this.longitude = longitude;
     }
 
-    public int getPoints() {
-        return points;
+    @Override
+    public int compareTo(Site a) {
+        return getName().compareTo(a.getName());
     }
 
-    public void setPoints(int points) {
-        this.points = points;
-    }
 }

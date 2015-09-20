@@ -45,7 +45,7 @@ public class LocationCard extends RecyclerView.ViewHolder {
 //        toolbar.setTitle(site.getName());
 //        toolbar.setTitleTextColor(Color.WHITE);
         ((TextView) layout.findViewById(R.id.locationName)).setText(site.getName());
-        ((TextView) layout.findViewById(R.id.pointNumber)).setText(site.getPoints()+"");
+//        ((TextView) layout.findViewById(R.id.pointNumber)).setText(site.getPoints()+"");
 
     }
 }
