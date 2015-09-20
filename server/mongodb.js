@@ -203,6 +203,7 @@
 				getPolygon(neUSAAOID, req);
 			} else {
 				console.log('Challenge not found. Check in exports.here or your string');
+				console.log(req.body.challenge + ' does not exist');
 			}
 			
 		};
