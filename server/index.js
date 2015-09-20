@@ -121,7 +121,8 @@ userSessionAuthenticate = function (req, res, next) {
             email: req.body.email,
             firstName: req.body.firstName,
             lastName: req.body.lastName,
-            points: 0
+            points: 0,
+            homeBase = req.body.homeBase
         });
 
         userSaveToDb(user).then(function () {
