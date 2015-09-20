@@ -49,15 +49,46 @@
 				var url = 'https://api.urthecast.com/v1/satellite_tracker/sensor_platforms/iris/forecasts?geometry_intersects=POINT(' + longitude + 
 					'%20' + latitude + ')&api_key=' + apiKey + '&api_secret=' + apiSecret;
 				console.log('url: ' + url);
+				var i = 0;
+				var epoch;
+				var date;
 
 				request.get(url, function (error, response, body) {
 					if (!error && response.statusCode == 200) {
 						var jsonBody = JSON.parse(body);
-						res.json(jsonBody.payload).status(200);
+						console.log(jsonBody);
+						while (jsonBody.payload[i].type === "future") {
+							epoch = jsonBody.payload[i].epoch;
+							i++;
+						}
+						date = new Date();
+						var month = epoch.substring(5,7) - 1;
+						console.log(epoch.substring(5,7));
+						var epochDate = new Date (epoch.substring(0,4), month, epoch.substring(8,10) ,epoch.substring(11,13), epoch.substring(14,16), epoch.substring(17,19), 0);
+						console.log("epoch date: " + epochDate);
+
+						var difference = (epochDate - date);
+						var cd = 24 * 60 * 60 * 1000;
+						var ch = 60 * 60 * 1000,
+							d = Math.floor(difference / cd),
+							h = Math.floor((difference - d * cd) / ch),
+							m = Math.round((difference - d * cd - h * ch) / 60000);
+
+						if (m === 60) {
+							h++;
+							m = 0;
+						} if (h === 24) {
+							d++;
+							h = 0;
+						}
+						console.log('days: ' + d);
+						console.log('hours: ' + h);
+						console.log('minutes: ' + m);
+
+						res.send(d + ' days ' + h + ' hours and ' + m + ' minutes.').status(200);
 					} else {
 						console.log('An error occured: ' + error);
 					}
-					callback(null, polygon, req);
 				});
 		};
 
