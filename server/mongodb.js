@@ -184,23 +184,23 @@
 		exports.here = function (req, res) {
 			//var userLocation = req.body.location;
 			if (req.body.challenge === "CN Tower") {
-				getPolygon(cnTowerAOID, req);
+				getPolygon(cnTowerAOID, req, res);
 			} else if (req.body.challenge === "Algonquin Park") {
-				getPolygon(algonquinParkAOID, req);
+				getPolygon(algonquinParkAOID, req, res);
 			} else if (req.body.challenge === "Scarborough bluffs") {
-				getPolygon(scarboroughBluffsAOID, req);
+				getPolygon(scarboroughBluffsAOID, req, res);
 			} else if (req.body.challenge === "Elora Gorge") {
-				getPolygon(eloraGorgeAOID, req);
+				getPolygon(eloraGorgeAOID, req, res);
 			} else if (req.body.challenge === "Kawartha Highlands") {
-				getPolygon(kawarthaHighlandsAOID, req);
+				getPolygon(kawarthaHighlandsAOID, req, res);
 			} else if (req.body.challenge === "Niagara Falls") {
-				getPolygon(niagaraFallsAOID, req);
+				getPolygon(niagaraFallsAOID, req, res);
 			} else if (req.body.challenge === "Hack The North") {
-				getPolygon(hackTheNorthAOID, req);
+				getPolygon(hackTheNorthAOID, req, res);
 			} else if (req.body.challenge === "GTA") {
-				getPolygon(gtaAOID, req);
+				getPolygon(gtaAOID, req, res);
 			} else if (req.body.challenge === "NEUSA") {
-				getPolygon(neUSAAOID, req);
+				getPolygon(neUSAAOID, req, res);
 			} else {
 				console.log('Challenge not found. Check in exports.here or your string');
 				console.log(req.body.challenge + ' does not exist');
@@ -209,7 +209,7 @@
 			
 		};
 
-		var getPolygon = function (aoid, req) {
+		var getPolygon = function (aoid, req, res) {
 			var polygon = [];
 			var url = "https://api.urthecast.com/v1/consumers/apps/me/aois/" + aoid + "?api_key=" + apiKey + 
 				"&api_secret=" + apiSecret;
