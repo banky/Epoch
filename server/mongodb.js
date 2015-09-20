@@ -57,7 +57,7 @@
 					if (!error && response.statusCode == 200) {
 						var jsonBody = JSON.parse(body);
 						console.log(jsonBody);
-						while (jsonBody.payload[i].type === "future") {
+						while (jsonBody.payload[i].type === "future" && i < jsonBody.payload.length) {
 							epoch = jsonBody.payload[i].epoch;
 							i++;
 						}
