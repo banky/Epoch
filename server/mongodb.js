@@ -299,7 +299,9 @@
 												
 												var challenge = {
 													"title" : title,
-													"points" : points
+													"points" : points,
+													"latitude" : averageLat, 
+													"longitude" : averageLon
 												}
 												challenges.push(challenge);
 												callback();

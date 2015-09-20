@@ -123,7 +123,7 @@ userSessionAuthenticate = function (req, res, next) {
             lastName: req.body.lastName,
             points: 0,
             homeBase : {
-            	laitude : req.body.latitude,
+            	latitude : req.body.latitude,
             	longitude : req.body.longitude
             }
         });
