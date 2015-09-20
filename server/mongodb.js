@@ -247,6 +247,7 @@
 						}
 						radius /= polygonLength;
 
+						console.log('Successfully at location');
 						res.status(200).send;
 					} else {
 						res.send(401);
