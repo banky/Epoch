@@ -195,7 +195,7 @@
 				getPolygon(kawarthaHighlandsAOID, req);
 			} else if (req.body.challenge === "Niagara Falls") {
 				getPolygon(niagaraFallsAOID, req);
-			} else if (req.body.challenge === "Hack the North") {
+			} else if (req.body.challenge === "Hack The North") {
 				getPolygon(hackTheNorthAOID, req);
 			} else if (req.body.challenge === "GTA") {
 				getPolygon(gtaAOID, req);
@@ -204,6 +204,7 @@
 			} else {
 				console.log('Challenge not found. Check in exports.here or your string');
 				console.log(req.body.challenge + ' does not exist');
+				res.status(404).send();
 			}
 			
 		};
