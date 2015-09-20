@@ -26,8 +26,9 @@
 		gtaAOID = 'AU_pMaRUGPejrq3tvGr4',
 		neUSAAOID = 'AU_pO8aY5HTUQ1kxV-eV',
 		hackTheNorthAOID = 'AU_pQrKNtVbz6yKH6Psj',
-		arrayOfAoIDs = [cnTowerAOID, algonquinParkAOID, scarboroughBluffsAOID, eloraGorgeAOID, kawarthaHighlandsAOID, niagaraFallsAOID, gtaAOID, neUSAAOID, hackTheNorthAOID];
-
+		arrayOfAoIDs = [cnTowerAOID, algonquinParkAOID, scarboroughBluffsAOID, eloraGorgeAOID, kawarthaHighlandsAOID, niagaraFallsAOID, gtaAOID, neUSAAOID, hackTheNorthAOID],
+		arrayOfChallengeNames = ["CN Tower", "Algonquin Park", "Scarborough Bluffs", "Elor Gorge", "Kawartha Highlands", 
+								"Niagara Falls", "GTA", "North East USA", "Hack The North"];
 	db.on('error', console.error);
 
 	db.once('open', function () {
@@ -210,8 +211,8 @@
 						averageLat /= polygonLength;
 
 						for (var i = 0; i < polygonLength; i++) {
-							radius += sqrt((abs(polygon[i][0] - averageLon))*(abs(polygon[i][0] - averageLon)) + 
-								(abs(polygon[i][1] - averageLat))*(abs(polygon[i][1] - averageLat)));
+							radius += Math.sqrt((Math.abs(polygon[i][0] - averageLon))*(Math.abs(polygon[i][0] - averageLon)) + 
+								(Math.abs(polygon[i][1] - averageLat))*(Math.abs(polygon[i][1] - averageLat)));
 						}
 						radius /= polygonLength;
 
@@ -225,72 +226,106 @@
 		};
 
 		exports.getChallenges = function (req, res) {
-			var title,
-				points = 50,
+			var points = 50,
 				homeBase,
 				polygon = [],
 				urls = [],
 				challenges = [];
 
-			for (var i = 0; i < 7; i++) {
-				url = "https://api.urthecast.com/v1/consumers/apps/me/aois/" + arrayOfAoIDs[i] + "?api_key=" + apiKey + 
-				"&api_secret=" + apiSecret;
-				waterfall([
-					function (callback) {
-						request.get(urls[i], function (error, response, body) {
-							if (!error && response.statusCode == 200) {
-								var jsonBody = JSON.parse(body);
-								polygon = jsonBody.payload[0].geometry.coordinates[0];
-							} else {
-								console.log('An error occured: ' + error);
-							}
-							callback(null, polygon, req);
-						});
-					}, function (polygon, req, callback) {
-						User.findOne({'email': req.query.email}, function (err, user) {
-							if (err) {
-								console.log('An error occured getting user in getChallenges: ' + err);
-							} else {
-								homeBase = user.homeBase;
-							}
-						});
-
-						if (!inside([homeBase.longitude, homeBase.latitude], polygon)) {
-							var averageLon = 0,
-								averageLat = 0,
-								polygonLength = polygon.length,
-								radius = 0;
-							for (var i = 0; i < polygonLength; i++) {
-								averageLon += polygon[i][0];
-								averageLat += polygon[i][1];
-							};
-							averageLon /= polygonLength;
-							averageLat /= polygonLength;
-
-							for (var i = 0; i < polygonLength; i++) {
-								radius += sqrt((abs(polygon[i][0] - averageLon))*(abs(polygon[i][0] - averageLon)) + 
-									(abs(polygon[i][1] - averageLat))*(abs(polygon[i][1] - averageLat)));
-							}
-							radius /= polygonLength;
-
-							var distance,
-								longitudeDistance,
-								latitudeDistance;
-							longitudeDistance = abs(homeBase.longitude - center.longitude) - radius;
-							latitudeDistance = abs(homeBase.latitude - center.latitude) - radius;
-
-							//Lets convert stuff to KM
-							longitudeDistance = 111.320 * cos(latitudeDistance);
-							latitudeDistance = latitudeDistance * 110.574;
-							
-							distance = sqrt(longitudeDistance * longitudeDistance + latitudeDistance * latitudeDistance);
-
-							points += distance*50/10;
-						}
-					}
-
-				]);	
+			for (var i = 0; i < arrayOfAoIDs.length; i++) {
+				urls.push("https://api.urthecast.com/v1/consumers/apps/me/aois/" + arrayOfAoIDs[i] + "?api_key=" + apiKey + 
+				"&api_secret=" + apiSecret);
 			}
+
+			waterfall ([
+				function (callbackOuter) {
+					for (var i = 0; i < arrayOfAoIDs.length; i++) {
+
+						(function (i) {
+							var title = arrayOfChallengeNames[i];
+							var url = "https://api.urthecast.com/v1/consumers/apps/me/aois/" + arrayOfAoIDs[i] + "?api_key=" + apiKey + 
+							"&api_secret=" + apiSecret;
+							waterfall([
+								function (callback) {
+									request.get(urls[i], function (error, response, body) {
+										if (!error && response.statusCode == 200) {
+											var jsonBody = JSON.parse(body);
+											polygon = jsonBody.payload[0].geometry.coordinates[0];
+											console.log(polygon);
+										} else {
+											console.log('crap An error occured: ' + error);
+										}
+										callback(null, polygon, req);
+									});
+								}, function (polygon, req, callback) {
+									
+									User.findOne({'email': req.query.email}, function (err, user) {
+										if (err) {
+											console.log('An error occured getting user in getChallenges: ' + err);
+										} else {
+											homeBase = user.homeBase;
+											if (!inside([homeBase.longitude, homeBase.latitude], polygon)) {
+												var averageLon = 0,
+													averageLat = 0,
+													polygonLength = polygon.length,
+													radius = 0;
+												for (var j = 0; j < polygonLength; j++) {
+													averageLon += polygon[j][0];
+													averageLat += polygon[j][1];
+												};
+												averageLon /= polygonLength;
+												averageLat /= polygonLength;
+
+												for (var j = 0; j < polygonLength; j++) {
+													radius += Math.sqrt((Math.abs(polygon[j][0] - averageLon))*(Math.abs(polygon[j][0] - averageLon)) + 
+														(Math.abs(polygon[j][1] - averageLat))*(Math.abs(polygon[j][1] - averageLat)));
+												}
+												radius /= polygonLength;
+
+												var distance,
+													longitudeDistance,
+													latitudeDistance;
+												longitudeDistance = Math.abs(homeBase.longitude - averageLon) - radius;
+												latitudeDistance = Math.abs(homeBase.latitude - averageLat) - radius;
+
+												//Lets convert stuff to KM
+												longitudeDistance = 111.320 * Math.cos(latitudeDistance);
+												latitudeDistance = latitudeDistance * 110.574;
+
+												distance = Math.sqrt(longitudeDistance * longitudeDistance + latitudeDistance * latitudeDistance);
+
+												points += distance*50/10;
+												points = Math.round(points);
+												
+												var challenge = {
+													"title" : title,
+													"points" : points
+												}
+												challenges.push(challenge);
+												callback();
+											} else {
+												console.log('inside home base');
+												callback();
+											}
+										}
+									});
+								}, function () {
+									if (challenges.length == arrayOfAoIDs.length) {
+										callbackOuter();
+									}
+								}
+
+							]);	
+						})(i);
+
+					}
+				}, function () {
+					console.log('sending json');
+					res.json(challenges).status(200);
+				}
+
+			]);
+			
 		};
 
 		exports.addHomeBase = function (req, res) {
