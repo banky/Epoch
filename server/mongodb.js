@@ -263,21 +263,19 @@
 										if (err) {
 											console.log('An error occured getting user in getChallenges: ' + err);
 										} else {
-											var currentLatitude;
-											var currentLongitude;
+											var averageLon = 0,
+												averageLat = 0,
+												polygonLength = polygon.length,
+												radius = 0;
+											for (var j = 0; j < polygonLength; j++) {
+												averageLon += polygon[j][0];
+												averageLat += polygon[j][1];
+											};
+											averageLon /= polygonLength;
+											averageLat /= polygonLength;
 											homeBase = user.homeBase;
-											if (!inside([homeBase.longitude, homeBase.latitude], polygon)) {
-												var averageLon = 0,
-													averageLat = 0,
-													polygonLength = polygon.length,
-													radius = 0;
-												for (var j = 0; j < polygonLength; j++) {
-													averageLon += polygon[j][0];
-													averageLat += polygon[j][1];
-												};
-												averageLon /= polygonLength;
-												averageLat /= polygonLength;
 
+											if (!inside([homeBase.longitude, homeBase.latitude], polygon)) {
 												for (var j = 0; j < polygonLength; j++) {
 													radius += Math.sqrt((Math.abs(polygon[j][0] - averageLon))*(Math.abs(polygon[j][0] - averageLon)) + 
 														(Math.abs(polygon[j][1] - averageLat))*(Math.abs(polygon[j][1] - averageLat)));
@@ -315,8 +313,8 @@
 												var challenge = {
 													"title" : title,
 													"points" : points,
-													"latitude" : currentLatitude,
-													"longitude" : currentLongitude
+													"latitude" : averageLat,
+													"longitude" : averageLon
 												}
 												challenges.push(challenge);
 												callback();
