@@ -233,7 +233,7 @@
 							homeBase = user.homeBase;
 						}
 					});
-					if (inside([req.body.location.longitude, req.body.location.latitude], polygon)) {
+					if (inside([req.body.longitude, req.body.latitude], polygon)) {
 						var averageLon = 0,
 							averageLat = 0,
 							polygonLength = polygon.length,
