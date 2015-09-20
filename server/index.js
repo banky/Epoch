@@ -6,6 +6,8 @@ var mongodb = require('./mongodb');
 var fs = require('fs');
 var cookieParser = require('cookie-parser');
 var PORT = process.env.PORT || 8080;
+var User = require('./user');
+var q = require('q');
 
 var currentChallenge;
 
@@ -245,11 +247,15 @@ app.post('/add-home-base', function (req, res) {
 	mongodb.addHomeBase(req, res);
 });
 
+
+
 //For testing. Not for demo purposes
 app.post('/add-locations', function (req, res) {
 	mongodb.addLocations(req, res);
 });
-
+app.get('/get-users', function (req, res) {
+	mongodb.getUsers(req, res);
+});
 
 app.listen(PORT);
 console.log('The magic happens on port ' + PORT);

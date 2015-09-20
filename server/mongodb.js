@@ -40,63 +40,50 @@
 
 		//Commented out the if statement because we are not yet getting any actual locations
 		exports.getNextTimeAtLocation = function(req, res) {
-			//if (false) {
-			//	console.log('Error. No location was received');
-			//	res.status(404).send();
-			//} else {
 				var longitude = req.query.longitude;
 				var latitude = req.query.latitude;
-				console.log('latitude: ' + latitude);
-				console.log('longitude: ' + longitude);
 				var url = 'https://api.urthecast.com/v1/satellite_tracker/sensor_platforms/iris/forecasts?geometry_intersects=POINT(' + longitude + 
 					'%20' + latitude + ')&api_key=' + apiKey + '&api_secret=' + apiSecret;
 				console.log('url: ' + url);
-				//Hacky way
-				https.request(url, function (response) {
-	  				var str = '';
 
-					//another chunk of data has been recieved, so append it to `str`
-					response.on('data', function (chunk) {
-						str += chunk;
-					});
-
-					//the whole response has been recieved, so we just print it out here
-					response.on('end', function () {
-						var parsed = JSON.parse(str);
-						res.json(str).status(200);
-						console.log(str);
-					});
-				}).end();
-			//}
+				request.get(url, function (error, response, body) {
+					if (!error && response.statusCode == 200) {
+						var jsonBody = JSON.parse(body);
+						res.json(jsonBody.payload).status(200);
+					} else {
+						console.log('An error occured: ' + error);
+					}
+					callback(null, polygon, req);
+				});
 		};
 
 		//Not for demo purposes
 		exports.addLocations = function(req,res) {
 			Locations.find(function(err,locations){
 				if(err){
-					console.log('Error finding user in addLocations:' + err);
+					console.log('Error finding locations in addLocations:' + err);
 					res.status(400).send();
 				} else{
-					locations.latitude.push(req.body.latitude);
-					locations.longitude.push(req.body.longitude);
-					locations.radius.push(req.body.radius);
-					locations.save(function(err,user){
-						if(err){
-							console.log('An error occured while adding the new location:' + err);
-
-						}
-
-						else{
-							res.status(200);
-						}
-					});
+					var location = {
+						latitude : req.body.latitude,
+						longitude : req.body.longitude,
+						radius : req.body.radius
+					}
+					locations.push(location);
+					// locations.(function (err,user) {
+					// 	if(err){
+					// 		console.log('An error occured while adding the new location:' + err);
+					// 	} else{
+					// 		res.status(200);
+					// 	}
+					// });
 				}
 			});
 		};
 
 		exports.getUserPoints = function(req, res) {
 			//Cannot test until we have functional login.
-			User.findOne({'email': req.param.email}, function (err, user) {
+			User.findOne({'email': req.query.email}, function (err, user) {
 				if (err) {
 					console.log('Error finding user in getUserPoints: ' + err);
 					res.status(400).send
@@ -109,7 +96,7 @@
 
 		exports.changePoints = function (req, res) {
 			//Cannot test until we have a functional login
-			User.findOne({'email': req.param.email}, function (err, user) {
+			User.findOne({'email': req.query.email}, function (err, user) {
 				if (err) {
 					console.log('Error finding user in changePoints: ' + err);
 				} else {
@@ -128,7 +115,7 @@
 		};
 
 		exports.getUserLocations = function (req, res) {
-			User.findOne({'email': req.param.email}, function (err, user) {
+			User.findOne({'email': req.query.email}, function (err, user) {
 				if (err) {
 					console.log('Error in finding user in getUserLocations: ' + err);
 				} else {
@@ -139,7 +126,7 @@
 		};
 
 		exports.addUserLocation = function (req, res) {
-			User.findOne({'email': req.param.email}, function (err, user) {
+			User.findOne({'email': req.query.email}, function (err, user) {
 				if(err) {
 					console.log('Error in finding user in addUserLocation: ' + err);
 				} else {
@@ -196,7 +183,7 @@
 				}, 
 				function (polygon, req, callback) {
 					var homeBase;
-					User.findOne({'email': req.param.email}, function (err, user) {
+					User.findOne({'email': req.query.email}, function (err, user) {
 						if (err) {
 							console.log('Error getting user in waterfall: ' + err);
 						} else {
@@ -253,7 +240,7 @@
 							callback(null, polygon, req);
 						});
 					}, function (polygon, req, callback) {
-						User.findOne({'email': req.param.email}, function (err, user) {
+						User.findOne({'email': req.query.email}, function (err, user) {
 							if (err) {
 								console.log('An error occured getting user in getChallenges: ' + err);
 							} else {
@@ -300,10 +287,12 @@
 		};
 
 		exports.addHomeBase = function (req, res) {
-			User.findOne({'email': req.param.email}, function (err, user) {
+			console.log(req.query.email);
+			User.findOne({'email': req.query.email}, function (err, user) {
 				if (err) {
 					console.log('An error occured finding user in addHoeBase: ' + err);
 				} else {
+					console.log(req.body.homeBase);
 					user.homeBase = req.body.homeBase;
 					user.save (function (err, user) {
 						if (err) {
@@ -316,6 +305,16 @@
 					});
 				}
 			});
+		};
+
+		exports.getUsers = function (req, res) {
+			User.find(function (err, user) {
+				if (err) {
+					console.log('An error occured finding user in addHoeBase: ' + err);
+				} else {
+					console.log(user);
+				}
+			})
 		};
 	});
 

@@ -3,31 +3,36 @@
 
 	var mongoose = require('mongoose'),
 		userSchema = new mongoose.Schema ({
-			firstName : {
+			email : {
 				type : String,
 				unique : true,
 				required : true
 			},
+			firstName : {
+				type : String,
+				unique : false,
+				required : true
+			},
 			lastName : {
 				type : String,
-				unique : true,
+				unique : false,
 				required : true
-			}, 
+			},
 			points : {
 				type : Number,
-				unique : true,
+				unique : false,
 				required : true
 			},
 			homeBase : {
 				latitude : {
 					type : Number,
-					unique : true,
-					required : true
+					unique : false,
+					required : false
 				},
 				longitude : {
 					type : Number,
-					unique : true,
-					required : true
+					unique : false,
+					required : false
 				}
 			},
 			locationsVisited : []

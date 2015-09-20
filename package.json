@@ -14,6 +14,7 @@
     "mongodb": "^2.1.0-alpha",
     "mongoose": "^4.1.7",
     "point-in-polygon": "*",
+    "q": "^2.0.3",
     "request": "*"
   },
   "author": "",
