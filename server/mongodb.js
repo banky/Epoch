@@ -27,7 +27,7 @@
 		neUSAAOID = 'AU_pO8aY5HTUQ1kxV-eV',
 		hackTheNorthAOID = 'AU_pQrKNtVbz6yKH6Psj',
 		arrayOfAoIDs = [cnTowerAOID, algonquinParkAOID, scarboroughBluffsAOID, eloraGorgeAOID, kawarthaHighlandsAOID, niagaraFallsAOID, gtaAOID, neUSAAOID, hackTheNorthAOID],
-		arrayOfChallengeNames = ["CN Tower", "Algonquin Park", "Scarborough Bluffs", "Elor Gorge", "Kawartha Highlands", 
+		arrayOfChallengeNames = ["CN Tower", "Algonquin Park", "Scarborough Bluffs", "Elora Gorge", "Kawartha Highlands", 
 								"Niagara Falls", "GTA", "North East USA", "Hack The North"];
 	db.on('error', console.error);
 
