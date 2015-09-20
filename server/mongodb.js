@@ -222,7 +222,7 @@
 				}, 
 				function (polygon, req, callback) {
 					var homeBase;
-					User.findOne({'email': req.query.email}, function (err, user) {
+					User.findOne({'email': req.body.email}, function (err, user) {
 						if (err) {
 							console.log('Error getting user in waterfall: ' + err);
 						} else {
