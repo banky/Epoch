@@ -242,8 +242,13 @@ app.get('/get-challenges', function (req, res) {
 	mongodb.getChallenges(req, res);
 });
 app.post('/add-home-base', function (req, res) {
-	mongodb.addHomeBase;
-})
+	mongodb.addHomeBase(req, res);
+});
+
+//For testing. Not for demo purposes
+app.post('/add-locations', function (req, res) {
+	mongodb.addLocations(req, res);
+});
 
 
 app.listen(PORT);

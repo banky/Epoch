@@ -72,13 +72,11 @@
 
 		//Not for demo purposes
 		exports.addLocations = function(req,res) {
-			Locations.findOne({'id': req.user._id}, function(err,user){
+			Locations.find(function(err,locations){
 				if(err){
 					console.log('Error finding user in addLocations:' + err);
 					res.status(400).send();
-				}
-
-				else{
+				} else{
 					locations.latitude.push(req.body.latitude);
 					locations.longitude.push(req.body.longitude);
 					locations.radius.push(req.body.radius);
