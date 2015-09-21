@@ -8,8 +8,6 @@ var cookieParser = require('cookie-parser');
 var PORT = process.env.PORT || 8080;
 var User = require('./user');
 var q = require('q');
-var connect = require('connect');
-var serveStatic = require('serve-static');
 var path = require('path');
 //
 
@@ -277,6 +275,5 @@ app.get('/get-users', function (req, res) {
 	mongodb.getUsers(req, res);
 });
 
-//connect().use(serveStatic(__dirname)).listen(8080);
 app.listen(PORT);
 console.log('The magic happens on port ' + PORT);
