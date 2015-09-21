@@ -17,7 +17,7 @@
 				type: Number,
 				unique: true,
 				required: true
-			}//The radius in K
+			}//The radius in Kilometers
 		});
 	module.exports = mongoose.model('locations', locationsSchema);
 }());

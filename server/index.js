@@ -9,8 +9,6 @@ var PORT = process.env.PORT || 8080;
 var User = require('./user');
 var q = require('q');
 
-var currentChallenge;
-
 userSessionAuthenticate = function (req, res, next) {
         UserSession.findOne({
             'sessionId': req.cookies.userSessionId

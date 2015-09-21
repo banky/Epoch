@@ -10,6 +10,7 @@
 		https = require('https'),
 		Locations = require('./locations'),
 		User = require('./user'),
+		Challenge = require('./challenge'),
 		config = require('./config'),
 		apiKey = config.apiKey,
 		apiSecret = config.apiSecret,
@@ -26,12 +27,15 @@
 		gtaAOID = 'AU_pMaRUGPejrq3tvGr4',
 		neUSAAOID = 'AU_pO8aY5HTUQ1kxV-eV',
 		hackTheNorthAOID = 'AU_pQrKNtVbz6yKH6Psj',
+
+
 		arrayOfAoIDs = [cnTowerAOID, algonquinParkAOID, scarboroughBluffsAOID, eloraGorgeAOID, kawarthaHighlandsAOID, niagaraFallsAOID, gtaAOID, neUSAAOID, hackTheNorthAOID],
 		arrayOfChallengeNames = ["CN Tower", "Algonquin Park", "Scarborough Bluffs", "Elora Gorge", "Kawartha Highlands", 
 								"Niagara Falls", "GTA", "North East USA", "Hack The North"];
 	db.on('error', console.error);
 
 	db.once('open', function () {
+		//Gets a list of all locations available to the user
 		exports.getLocations = function(req, res) {
 			Locations.find(function (err, locations) {
 				if (err) {
@@ -42,7 +46,7 @@
 			}); 
 		};
 
-		//Commented out the if statement because we are not yet getting any actual locations
+		//Gets the next time that the iss will be above a given location
 		exports.getNextTimeAtLocation = function(req, res) {
 				var longitude = req.query.longitude;
 				var latitude = req.query.latitude;
@@ -120,6 +124,7 @@
 			});
 		};
 
+		//Gets the users points from the database
 		exports.getUserPoints = function(req, res) {
 			//Cannot test until we have functional login.
 			User.findOne({'email': req.query.email}, function (err, user) {
@@ -133,6 +138,7 @@
 			});
 		};
 
+		//Increments the users points in the database
 		exports.changePoints = function (req, res) {
 			//Cannot test until we have a functional login
 			User.findOne({'email': req.query.email}, function (err, user) {
@@ -153,6 +159,7 @@
 			});
 		};
 
+		//Gets the locations the user has completed challenges
 		exports.getUserLocations = function (req, res) {
 			User.findOne({'email': req.query.email}, function (err, user) {
 				if (err) {
@@ -164,6 +171,7 @@
 			});
 		};
 
+		//Adds the users location to DB. Used when user completes a challenge
 		exports.addUserLocation = function (req, res) {
 			User.findOne({'email': req.query.email}, function (err, user) {
 				if(err) {
@@ -181,31 +189,24 @@
 			});
 		};
 
+		//Checks if the user is at a location
 		exports.here = function (req, res) {
-			//var userLocation = req.body.location;
-			if (req.body.challenge === "CN Tower") {
-				getPolygon(cnTowerAOID, req, res);
-			} else if (req.body.challenge === "Algonquin Park") {
-				getPolygon(algonquinParkAOID, req, res);
-			} else if (req.body.challenge === "Scarborough bluffs") {
-				getPolygon(scarboroughBluffsAOID, req, res);
-			} else if (req.body.challenge === "Elora Gorge") {
-				getPolygon(eloraGorgeAOID, req, res);
-			} else if (req.body.challenge === "Kawartha Highlands") {
-				getPolygon(kawarthaHighlandsAOID, req, res);
-			} else if (req.body.challenge === "Niagara Falls") {
-				getPolygon(niagaraFallsAOID, req, res);
-			} else if (req.body.challenge === "Hack The North") {
-				getPolygon(hackTheNorthAOID, req, res);
-			} else if (req.body.challenge === "GTA") {
-				getPolygon(gtaAOID, req, res);
-			} else if (req.body.challenge === "NEUSA") {
-				getPolygon(neUSAAOID, req, res);
-			} else {
-				console.log('Challenge not found. Check in exports.here or your string');
-				console.log(req.body.challenge + ' does not exist');
-				res.status(404).send();
-			}
+			Challenge.find(function (err, challenges) {
+				if (err) {
+					console.log('An error occured getting challenges in here: ' + err);
+				}
+				var challengeFound = false;
+				for (var i = 0; i < challenges.length, i++) {
+					if (challenges[i].name = req.body.challenge) {
+						getPolygon(challenges[i].aoid, req, res);
+						challengeFound = true;
+					}
+				}
+				if (!challengeFound) {
+					console.log('It seems ' + req.body.challenge + 'does not exist in our DB');
+					res.status(404).send();
+				}
+			});
 			
 		};
 
@@ -345,6 +346,7 @@
 												challenges.push(challenge);
 												callback();
 											} else {
+												//The users home base is inside this challenge
 												console.log('inside home base');
 												var challenge = {
 													"title" : title,
@@ -376,6 +378,7 @@
 			
 		};
 
+		//Adds the location of the home base of the user to the database
 		exports.addHomeBase = function (req, res) {
 			console.log(req.query.email);
 			User.findOne({'email': req.query.email}, function (err, user) {
@@ -397,6 +400,7 @@
 			});
 		};
 
+		//Used for demo purposes
 		exports.getUsers = function (req, res) {
 			User.find(function (err, user) {
 				if (err) {
@@ -408,7 +412,7 @@
 		};
 	});
 
-	mongoose.connect('mongodb://heroku_90jwgmq9:nt2u3qf5v93tu4picrikhiqajj@ds051553.mongolab.com:51553/heroku_90jwgmq9');
+	mongoose.connect(config.databaseUrl);
 
 
 }());
