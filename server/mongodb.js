@@ -196,7 +196,7 @@
 					console.log('An error occured getting challenges in here: ' + err);
 				}
 				var challengeFound = false;
-				for (var i = 0; i < challenges.length, i++) {
+				for (var i = 0; i < challenges.length; i++) {
 					if (challenges[i].name = req.body.challenge) {
 						getPolygon(challenges[i].aoid, req, res);
 						challengeFound = true;

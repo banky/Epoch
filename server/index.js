@@ -8,6 +8,10 @@ var cookieParser = require('cookie-parser');
 var PORT = process.env.PORT || 8080;
 var User = require('./user');
 var q = require('q');
+var connect = require('connect');
+var serveStatic = require('serve-static');
+var path = require('path');
+//
 
 userSessionAuthenticate = function (req, res, next) {
         UserSession.findOne({
@@ -171,10 +175,24 @@ userSessionAuthenticate = function (req, res, next) {
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(express.static(__dirname + '../public')).use(cookieParser());
+var staticPath = path.resolve(__dirname, '../public');
+app.use(express.static(staticPath)).use(cookieParser());
 
 app.get('/', function (req, res) {
-	res.send('<html><body><h1>Hello World</h1></body></html>');
+	//res.send('<html><body><h1>Hello World</h1></body></html>');
+    // console.log('--------')
+    // fs.readFile('../public/index.html', function (err, html) {
+    //     if (err) {
+    //         throw err; 
+    //     }       
+    //     http.createServer(function(request, response) {  
+    //         response.writeHeader(200, {"Content-Type": "text/html"});  
+    //         response.write(html);  
+    //         response.end();  
+    //     }).listen(8000);
+    // });
+    var staticPath = path.resolve(__dirname, '../public/index.html');
+    res.sendFile(staticPath);
 });
 
 app.post('/', userCreate, function (req, res) {
@@ -259,5 +277,6 @@ app.get('/get-users', function (req, res) {
 	mongodb.getUsers(req, res);
 });
 
+//connect().use(serveStatic(__dirname)).listen(8080);
 app.listen(PORT);
 console.log('The magic happens on port ' + PORT);
