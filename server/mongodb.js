@@ -8,16 +8,18 @@
 
 		http = require('http'),
 		https = require('https'),
-		Locations = require('./locations'),
-		User = require('./user'),
-		Challenge = require('./challenge'),
-		config = require('./config'),
-		apiKey = config.apiKey,
-		apiSecret = config.apiSecret,
 		inside = require('point-in-polygon'),
 		request = require('request'),
 		waterfall = require('async-waterfall'),
 
+		Locations = require('./models/locations'),
+		User = require('./models/user'),
+		Challenge = require('./models/challenge'),
+		
+		config = require('./config'),
+		apiKey = config.apiKey,
+		apiSecret = config.apiSecret,
+		
 		cnTowerAOID = 'AU_nfvr5tVbz6yKH6FGa',
 		algonquinParkAOID = 'AU_nge1Aae0DkMKpFMvJ',
 		scarboroughBluffsAOID = 'AU_ngvnCae0DkMKpFMvL',
