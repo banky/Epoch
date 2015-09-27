@@ -15,6 +15,7 @@
 		B10F1D991BB7179300A6E568 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B10F1D971BB7179300A6E568 /* LaunchScreen.storyboard */; };
 		B10F1DA41BB7179300A6E568 /* EpochTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10F1DA31BB7179300A6E568 /* EpochTests.swift */; };
 		B10F1DAF1BB7179300A6E568 /* EpochUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10F1DAE1BB7179300A6E568 /* EpochUITests.swift */; };
+		B10F1DBD1BB718CE00A6E568 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10F1DBC1BB718CE00A6E568 /* LoginViewController.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		B10F1DAA1BB7179300A6E568 /* EpochUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EpochUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B10F1DAE1BB7179300A6E568 /* EpochUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpochUITests.swift; sourceTree = "<group>"; };
 		B10F1DB01BB7179300A6E568 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B10F1DBC1BB718CE00A6E568 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 			children = (
 				B10F1D8B1BB7179300A6E568 /* AppDelegate.swift */,
 				B10F1D8D1BB7179300A6E568 /* ViewController.swift */,
+				B10F1DBC1BB718CE00A6E568 /* LoginViewController.swift */,
 				B10F1D8F1BB7179300A6E568 /* Main.storyboard */,
 				B10F1D951BB7179300A6E568 /* Assets.xcassets */,
 				B10F1D971BB7179300A6E568 /* LaunchScreen.storyboard */,
@@ -258,6 +261,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B10F1DBD1BB718CE00A6E568 /* LoginViewController.swift in Sources */,
 				B10F1D8E1BB7179300A6E568 /* ViewController.swift in Sources */,
 				B10F1D8C1BB7179300A6E568 /* AppDelegate.swift in Sources */,
 				B10F1D941BB7179300A6E568 /* Epoch.xcdatamodeld in Sources */,
@@ -485,6 +489,7 @@
 				B10F1DB51BB7179300A6E568 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B10F1DB61BB7179300A6E568 /* Build configuration list for PBXNativeTarget "EpochTests" */ = {
 			isa = XCConfigurationList;
@@ -493,6 +498,7 @@
 				B10F1DB81BB7179300A6E568 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		B10F1DB91BB7179300A6E568 /* Build configuration list for PBXNativeTarget "EpochUITests" */ = {
 			isa = XCConfigurationList;
@@ -501,6 +507,7 @@
 				B10F1DBB1BB7179300A6E568 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
